@@ -1,8 +1,9 @@
 package main;
 
 import frontend.GUI;
-import logic.Elevator;
+import frontend.ExternalControls;
 import logic.ElevatorController;
+import types.Elevator;
 
 /**
  * Main application.
@@ -25,8 +26,9 @@ public class Main {
             System.out.println(floorCount);
         }
 
-        Elevator elevator = new Elevator();
-        ElevatorController controller = new ElevatorController(elevator, floorCount);
+        Elevator elevator = new Elevator(floorCount);
+        ElevatorController controller = new ElevatorController(elevator);
         GUI.run(controller, PANEL_SIZE);
+        ExternalControls.run(controller, PANEL_SIZE);
     }
 }

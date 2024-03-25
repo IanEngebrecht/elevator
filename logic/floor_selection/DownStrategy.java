@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import types.FloorRequest;
+
 /**
  * Floor selection strategy when the elevator is going DOWN.
  */
@@ -14,11 +16,13 @@ public class DownStrategy implements FloorSelectionStrategy {
      * @param currentFloor The current floor of the elevator.
      * @return The next floor to travel to, or 0 if nothing more can be done going this direction.
      */
-    public Integer nextFloor(List<Integer> targetFloors, Integer currentFloor) {
-        List<Integer> copy = new ArrayList<Integer>(targetFloors);
+    public FloorRequest nextFloor(List<FloorRequest> targetFloors, Integer currentFloor) {
+        List<FloorRequest> copy = new ArrayList<FloorRequest>(targetFloors);
         Collections.sort(copy);
         Collections.reverse(copy);
-        copy.removeIf(x -> x >= currentFloor);
-        return copy.size() > 0 ? copy.get(0) : 0;
+        System.out.println(copy);
+        copy.removeIf(x -> x.targetFloor >= currentFloor);
+        System.out.println(copy);
+        return copy.size() > 0 ? copy.get(0) : null;
     }
 }

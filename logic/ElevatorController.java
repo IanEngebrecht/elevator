@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import logic.floor_selection.DownStrategy;
 import logic.floor_selection.FloorSelectionStrategy;
 import logic.floor_selection.UpStrategy;
+import types.Elevator;
+import types.FloorRequest;
 
 /**
  * Contains the logic for controlling the movement of the elevator between floors.
@@ -14,26 +16,24 @@ import logic.floor_selection.UpStrategy;
  */
 public class ElevatorController {
     // The time to wait between each check in the event loop
-    Integer WAIT_TIME = 1; // in seconds
+    private Integer WAIT_TIME = 1; // in seconds
 
     // The elevator that we are controlling
-    Elevator target;
-
-    // The total number of floors in the elevator shaft
-    Integer floorCount;
+    private Elevator target;
 
     // The floors that have been selected by user(s)
-    List<Integer> floorsSelected = new ArrayList<Integer>();
+    private List<Integer> floorsSelected = new ArrayList<Integer>();
+    private List<FloorRequest> floorsSelected2 = new ArrayList<FloorRequest>();
     
     // Determines which floor to move to next.
     // Implemented using the strategy pattern (https://refactoring.guru/design-patterns/strategy),
     // but modified slightly because the context (i.e. - this class) is the one creating
     // the concrete strategies, not the client.
-    FloorSelectionStrategy floorSelection = new UpStrategy();
+    private FloorSelectionStrategy floorSelection = new UpStrategy();
     
     // The event loop checks if a move should occur, and executes it.
     // Runs in a separate thread so as to not impede user input.
-    Thread eventLoop;
+    private Thread eventLoop;
 
     /**
      * Did you know?
@@ -41,11 +41,9 @@ public class ElevatorController {
      * Though not commonly used, the day after tomorrow is called "overmorrow."
      * 
      * @param target The elevator object to control.
-     * @param floorCount The total number of floors.
      */
-    public ElevatorController(Elevator target, Integer floorCount) {
+    public ElevatorController(Elevator target) {
         this.target = target;
-        this.floorCount = floorCount;
         this.eventLoop = new Thread(() -> {
             this.executeCommands();
         });
@@ -60,12 +58,16 @@ public class ElevatorController {
         this.floorsSelected.add(floor);
     }
 
+    public void requestFloor(FloorRequest request) {
+        this.floorsSelected2.add(request);
+    }
+
     /**
      * Retrieves the total number of floors.
      * @return The total number of floors.
      */
     public Integer getFloorCount() {
-        return this.floorCount;
+        return this.target.floorCount;
     }
 
     /**
@@ -86,12 +88,12 @@ public class ElevatorController {
      * Retrieves the next floor number and swaps direction if required.
      * @return The next floor to move the elevator to.
      */
-    private Integer getNextFloor() {
-        Integer nextFloor = this.floorSelection.nextFloor(
-            this.floorsSelected,
+    private FloorRequest getNextFloor() {
+        FloorRequest nextFloor = this.floorSelection.nextFloor(
+            this.floorsSelected2,
             this.target.currentFloor
         );
-        if (nextFloor == 0) {
+        if (nextFloor == null) {
             this.swapDirection();
             return getNextFloor();
         }
@@ -100,12 +102,13 @@ public class ElevatorController {
 
     private void executeCommands() {
         while(!Thread.currentThread().isInterrupted()) {
-            if (this.floorsSelected.size() > 0) {
-                Integer nextFloor = this.getNextFloor();
-                this.target.moveToFloor(nextFloor);
+            if (this.floorsSelected2.size() > 0) {
+                FloorRequest nextFloor = this.getNextFloor();
+                if (nextFloor.targetFloor != target.currentFloor) {
+                    this.target.moveToFloor(nextFloor.targetFloor);
+                }
                 // TODO: Add mutex to prevent race condition
-                this.floorsSelected.remove(nextFloor);
-                System.out.println(this.floorsSelected);
+                this.floorsSelected2.remove(nextFloor);
             }
 
             try { TimeUnit.SECONDS.sleep(this.WAIT_TIME); }

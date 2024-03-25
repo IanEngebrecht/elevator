@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 import logic.ElevatorController;
+import types.FloorRequest;
 
 public class GUI {
     public static void run(ElevatorController controller, Integer panelSize) {
         // Create new window
-        JFrame frame = new JFrame("Elevator Controls");
+        JFrame frame = new JFrame("Internal Controls");
 
         // Determine floor button layout
         List<Integer> buttonLayout = ButtonLayout.getLayout(controller.getFloorCount());
@@ -35,7 +36,9 @@ public class GUI {
                 frame.add(button);
                 button.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                    controller.selectFloor(Integer.parseInt(e.getActionCommand()));
+                        controller.requestFloor(
+                            new FloorRequest(Integer.parseInt(e.getActionCommand()))
+                        );
                     }
                 });
             }
