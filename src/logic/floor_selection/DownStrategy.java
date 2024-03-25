@@ -18,7 +18,7 @@ public class DownStrategy implements FloorSelectionStrategy {
         List<Integer> copy = new ArrayList<Integer>(targetFloors);
         Collections.sort(copy);
         Collections.reverse(copy);
-        copy.removeIf(x -> x >= currentFloor);
+        copy.removeIf(x -> x > currentFloor);
         return copy.size() > 0 ? copy.get(0) : 0;
     }
 }

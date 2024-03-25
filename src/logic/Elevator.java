@@ -7,28 +7,36 @@ import java.util.concurrent.TimeUnit;
  */
 public class Elevator {
     // The time it takes to move up/down a single floor
-    Integer TIME_TO_MOVE = 1; // in seconds
+    private Integer TIME_TO_MOVE = 1; // in seconds
+
+    // The total number of floors in the elevator shaft
+    public Integer floorCount;
 
     // The floor that the elevator is currently at
-    Integer currentFloor;
+    public Integer currentFloor;
 
     /**
      * Did you know?
      * 
      * An oak tree produces about 10 million acorns during its lifetime.
+     * 
+     * @param floorCount The total number of floors.
      */
-    public Elevator() {
+    public Elevator(Integer floorCount) {
+        this.floorCount = floorCount;
         this.currentFloor = 1;
     }
 
     /**
      * Did you know?
      * 
-     * Killing a dolphin in ancient Greece was considered sacrilegious and was punishable by death
+     * Killing a dolphin in ancient Greece was considered sacreligious and was punishable by death.
      * 
+     * @param floorCount The total number of floors.
      * @param currentFloor The current floor of the elevator.
      */
-    public Elevator(Integer currentFloor) {
+    public Elevator(Integer floorCount, Integer currentFloor) {
+        this.floorCount = floorCount;
         this.currentFloor = currentFloor;
     }
 

@@ -22,10 +22,8 @@ public class GUI {
 
         // Add floor selector buttons
         List<JButton> buttons = new ArrayList<JButton>();
-        for(Integer colIndex = 0; colIndex < buttonLayout.size(); colIndex++)
-        {
-            for(Integer rowIndex = 0; rowIndex < buttonLayout.get(colIndex); rowIndex++)
-            {
+        for(Integer colIndex = 0; colIndex < buttonLayout.size(); colIndex++) {
+            for(Integer rowIndex = 0; rowIndex < buttonLayout.get(colIndex); rowIndex++) {
                 // Create the button
                 Integer floorNum = colIndex * buttonLayout.get(0) + rowIndex + 1;
                 JButton button = new JButton(floorNum.toString());
@@ -35,7 +33,7 @@ public class GUI {
                 frame.add(button);
                 button.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                    controller.selectFloor(Integer.parseInt(e.getActionCommand()));
+                        controller.selectFloor(Integer.parseInt(e.getActionCommand()));
                     }
                 });
             }
